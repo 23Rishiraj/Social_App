@@ -176,5 +176,5 @@ const getUserProfile = async (req, res) => {
         console.log("error in getUserProfile:", err.message);
     }
 }
-
+ 
 export { getUserProfile, signupUser, loginUser, logoutUser, followunfollowUser, updateUser };

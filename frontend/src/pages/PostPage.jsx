@@ -1,39 +1,92 @@
-import { Avatar, Center, Flex, Image, Box, Text, Divider, Button } from "@chakra-ui/react"
+import { Avatar, Center, Flex, Image, Box, Text, Divider, Button, Spinner } from "@chakra-ui/react"
 import { BsThreeDots } from "react-icons/bs"
 import Actions from "../components/Action"
 import Comment from "../components/comment"
-import { useState } from "react"
+import { use, useEffect, useState } from "react"
+import useGetUserProfiler from "../hooks/useGetUserProfile"
+import useShowToast from "../hooks/useShowToast"
+import { useParams } from "react-router-dom"  
+import { DeleteIcon } from "@chakra-ui/icons"
+import { formatDistanceToNow } from "date-fns"
+import { useRecoilValue } from "recoil"
+import userAtom from "../atoms/userAtom"
 
 const postpage = () => {
   const [liked, setliked] = useState(false)
+  const { user, loading } = useGetUserProfiler();
+  const showToast = useShowToast();
+  const { pid } = useParams();
+  const currentUser = useRecoilValue(userAtom);
+  useEffect(() => {
+    const getPost = async () => {
+      try {
+        const res = await fetch(`/api/post/${pid}`); // Replace with actual post ID
+        const data = await res.json();
+        if (data.error) {
+          showToast("Error", data.error, "error");
+          return;
+        }
+        console.log(data);
+        getPost(data);
+      } catch (error) {
+        console.error("Error fetching post:", error);
+      }
+    };
+    getPost();
+  }, [showToast, pid]);
+
+  const handleDeletePost = async (e) => {}
+
+  if (!user && loading) {
+    return (
+      <Flex justifyContent={"center"}>
+        <Spinner sixe={"xl"} />
+      </Flex>
+    )
+  }
+
+  if (!post) return null;
+
   return (
     <>
       <Flex>
         <Flex w={"full"} alignItems={"center"} gap={3}>
-          <Avatar src="/zuck-avatar.png" size={"md"} name="Mark Hennery" />
+          <Avatar src={user.profilePic} size={"md"} name="Mark Hennery" />
           <Flex>
-            <Text fontSize={"sm"} fontWeight={"bold"} >Mark Hennery</Text>
+            <Text fontSize={"sm"} fontWeight={"bold"} >{user.username}</Text>
             <Image src="/verified.png" w="4" h={4} ml={4} />
           </Flex>
         </Flex>
+
         <Flex gap={4} alignItems={"center"}>
-          <Text fontSize={"sm"} color={"gray.light"}>1d</Text>
-          <BsThreeDots />
+          <Text fontSize={"xs"} width={36} textAlign={"right"} color={"gray.light"} >
+            {formatDistanceToNow(new Date(post.createdAt))} ago
+          </Text>
+          {currentUser?._id === user._id && <DeleteIcon size={20} onClick={handleDeletePost} />}
         </Flex>
       </Flex>
 
-      <Text my={3}>Let's talk about threads</Text>
-      <Box borderRadius={6} overflow={"hidden"} border={"1px solid "} borderColor={"gray.light"} >
-        <Image src={"/post1.png"} w={"full"} />
-      </Box>
+      <Flex gap={4} alignItems={"center"}>
+        <Text fontSize={"xs"} width={36} textAlign={"right"} color={"gray.light"} >
+          {formatDistanceToNow(new Date(post.createdAt))} ago
+        </Text>
+        {currentUser?._id === user._id && <DeleteIcon size={20} onClick={handleDeletePost} />}
+      </Flex>
+
+      <Text my={3}>{post.text}</Text>
+      {post.img && (
+        <Box borderRadius={6} overflow={"hidden"} border={"1px solid "} borderColor={"gray.light"} >
+          <Image src={post.img} w={"full"} />
+        </Box>
+      )}
       <Flex gap={3} my={3}>
-        <Actions liked={liked} setliked={setliked} />
+        <Actions post={post} />
       </Flex>
       <Flex alignItems={"center"} gap={2}>
-        <Text color={"gray.light"} fontSize={"sm"}>323 replies</Text>
+        <Text color={"gray.light"} fontSize={"sm"}>{post.replies.length} replies</Text>
         <Box w={0.5} h={0.5} borderRadius={"full"} bg={"gray.light"}></Box>
         <Text color={"gray.light"} fontSize={"sm"}>
-          {654 + (liked ? 1 : 0)} likes
+          {post.likes.length} likes
         </Text>
 
       </Flex>
@@ -47,7 +100,7 @@ const postpage = () => {
         <Button>Get</Button>
       </Flex>
       <Divider my={4} />
-      <Comment 
+      {/* <Comment 
       comment ="looks really good"
       createdAt="2d" 
       likes={100}
@@ -74,7 +127,7 @@ const postpage = () => {
         likes={512}
         username="Bill Gates"
         userAvatar="https://bit.ly/ryan-florence"
-       />
+       /> */}
 
 
     </>
