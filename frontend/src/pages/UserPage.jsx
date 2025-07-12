@@ -6,12 +6,14 @@ import useShowToast from "../hooks/useShowToast";
 import { Flex, Spinner, Text } from "@chakra-ui/react";
 import Post from "../components/Post";
 import useGetUserProfiler from "../hooks/useGetUserProfile";
+import { useRecoilState } from "recoil";
+import postAtoms from "../atoms/postAtoms";
 
 const UserPage = () => {
   const { user, loading } = useGetUserProfiler();
   const { username } = useParams();
   const showToast = useShowToast();
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useRecoilState(postAtoms);
   const [fetchingPosts, setFetchingPosts] = useState(true);
 
   useEffect(() => {
@@ -39,8 +41,8 @@ const UserPage = () => {
     }
 
     getPost();
-  }, [username, showToast]);
-  // console.log( user);
+  }, [username, showToast,setPosts]);
+  console.log( "post is here and recoil state", posts);
   if (!user && loading) {
   return (
     <Flex justifyContent="center" alignItems="center" minH="60vh">

@@ -10,6 +10,9 @@ import usePreviewing from "../hooks/usePreviewing"
 import { useRecoilState, useRecoilValue } from "recoil"
 import userAtom from "../atoms/userAtom"
 import useShowToast from "../hooks/useShowToast"
+import postAtoms from "../atoms/postAtoms"
+import { useParams } from "react-router-dom"
+// import { set } from "mongoose"
 
 const MAX_CHAR = 500;
 
@@ -22,6 +25,8 @@ const CreatPost = () => {
     const user = useRecoilValue(userAtom)
     const showToast = useShowToast();
     const [loading ,setLoading] = useState(false);
+    const [post, setPost] = useRecoilState(postAtoms);
+    const {username}=useParams();
 
     const handleTextChange = (e) => {
         const inputText = e.target.value;
@@ -54,6 +59,9 @@ const CreatPost = () => {
             return;
         }
         showToast("Success","Post Created Successfully","success");
+        if(username===user.username){
+        setPost([data, ...post]);
+        }
         onClose();
         setPostText("");
         setImgUrl("");
@@ -72,12 +80,12 @@ const CreatPost = () => {
             <Button
                 position={"fixed"}
                 bottom={10}
-                right={10}
-                leftIcon={<AddIcon />}
+                right={5}
                 bg={useColorModeValue("gray.300", "gray.dark")}
                 onClick={onOpen}
+                size={{ base: "sm",sm: "md" }}
             >
-                Post
+                <AddIcon />
             </Button>
 
             <Modal isOpen={isOpen} onClose={onClose}>

@@ -12,7 +12,7 @@ import AuthPage from './pages/AuthPage';
 import UpdateProfilePage from "./pages/UpdateProfilePage";
 import { useRecoilValue } from "recoil";
 import userAtom from "./atoms/userAtom";
-import LogoutButton from "./components/LogoutButton";
+// import LogoutButton from "./components/LogoutButton";
 import CreatPost from "./components/CreatPost";
 
 function App() {
@@ -27,12 +27,18 @@ function App() {
         <Route path="/update" element={user ? <UpdateProfilePage /> : <Navigate to="/auth" />} />
         {/* <Route path="/update" element={<UpdateProfilePage />}/>; */}
 
-        <Route path="/:username" element={user ? <UserPage /> : <Navigate to="/auth" />} />
+        <Route path="/:username" element={user ?
+         (
+          <>
+          <UserPage /> 
+          <CreatPost />
+          </>
+          ) : <UserPage />} />
         {/* we will send this username to a usePpage */}
-        <Route path="/:username/post/:pid" element={<PostPage />} />
+        <Route path="/:username/posts/:pid" element={<PostPage />} />
       </Routes>
-      {user && <LogoutButton />}
-      {user && <CreatPost />}
+      {/* {user && <LogoutButton />}  */}
+      {/* {user && <CreatPost />} */}
       {/* <CreatPost/> */}
 
     </Container>

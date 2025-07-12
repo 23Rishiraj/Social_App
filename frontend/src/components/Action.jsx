@@ -18,14 +18,15 @@ import { useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil"; 
 import userAtom from "../atoms/userAtom";
 import useShowToast from "../hooks/useShowToast";
+import postAtoms from "../atoms/postAtoms";
 // import postsAtom from "../atoms/postsAtom";
 
-const Actions = ({post:post_}) =>
+const Actions = ({post}) =>
 {
     const { isOpen, onOpen, onClose } = useDisclosure();
 	const user = useRecoilValue(userAtom);
-	const [liked, setLiked] = useState(post_.likes.includes(user?._id));
-	const [post, setPost] = useState(post_);
+	const [liked, setLiked] = useState(post.likes.includes(user?._id));
+	const [posts, setPosts] = useRecoilState(postAtoms);
 	const [isLiking, setIsLiking] = useState(false);
 	const [isReplying, setIsReplying] = useState(false);
 	const [reply, setReply] = useState("");
@@ -48,25 +49,25 @@ const Actions = ({post:post_}) =>
 			if (data.error) return showToast("Error", data.error, "error");
 			console.log(data);
 			if (!liked) {
-			// 	// add the id of the current user to post.likes array
-			// 	const updatedPosts = posts.map((p) => {
-			// 		if (p._id === post._id) {
-			// 			return { ...p, likes: [...p.likes, user._id] };
-			// 		}
-			// 		return p;
-			// 	});
-			// 	setPosts(updatedPosts);
-			setPost({...post, likes : [...post.likes, user._id]})
+			// add the id of the current user to post.likes array
+				const updatedPosts = posts.map((p) => {
+					if (p._id === post._id) {
+						return { ...p, likes: [...p.likes, user._id] };
+					}
+					return p;
+				});
+				setPosts(updatedPosts);
+			// setPost({...post, likes : [...post.likes, user._id]})
 			} else {
-			// 	// remove the id of the current user from post.likes array
-			// 	const updatedPosts = posts.map((p) => {
-			// 		if (p._id === post._id) {
-			// 			return { ...p, likes: p.likes.filter((id) => id !== user._id) };
-			// 		}
-			// 		return p;
-			// 	});
-			// 	setPosts(updatedPosts);
-			setPost({...post, likes : post.likes.filter(id => id !== user._id)})
+				// remove the id of the current user from post.likes array
+				const updatedPosts = posts.map((p) => {
+					if (p._id === post._id) {
+						return { ...p, likes: p.likes.filter((id) => id !== user._id) };
+					}
+					return p;
+				});
+				setPosts(updatedPosts);
+			// setPost({...post, likes : post.likes.filter(id => id !== user._id)})
 			}
 
 			setLiked(!liked);
@@ -93,21 +94,22 @@ const Actions = ({post:post_}) =>
 			if (data.error) return showToast("Error", data.error, "error");
 			console.log(data);
 
-			setPost({ ...post, replies: [...post.replies, data.reply] })
-			showToast("Success", "Reply posted successfully", "success");
-
-			// const updatedPosts = post.map((p) => {
-			// 	if (p._id === post._id) {
-			// 		return { ...p, replies: [...p.replies, data] };
-			// 	}
-			// 	return p;
-			// });
-			// setPost(updatedPosts);
+			// setPost({ ...post, replies: [...post.replies, data.reply] })
 			// showToast("Success", "Reply posted successfully", "success");
+
+			const updatedPosts = posts.map((p) => {
+				if (p._id === post._id) {
+					return { ...p, replies: [...p.replies, data] };
+				}
+				return p;
+			});
+			setPosts(updatedPosts);
+			showToast("Success", "Reply posted successfully", "success");
 			onClose();
-			// setReply("");
+			setReply("");
 		} catch (error) {
 			showToast("Error", error.message, "error");
+			console.log("Error replying to post:", error);
 		} finally {
 			setIsReplying(false);
 		}

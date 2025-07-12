@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import generateTokenAndSetCookie from "../utils/helpers/generateTokenAndSetCookie.js"
 import { v2 as cloudinary } from "cloudinary";
 import mongoose from "mongoose";
+import Post from "../models/postModel.js";
 
 // import { use } from "react";
 // import jwt from "jsonwebtoken";
@@ -147,6 +148,17 @@ const updateUser = async (req, res) => {
 
         user = await user.save();
 
+        await Post.updateMany(
+            { "replies.userId": userId },
+            {
+                $set: {
+                    "replies.$[reply].username": user.username,
+                    "replies.$[reply].userProfilePic": user.profilePic,
+                }
+            },
+            {arrayFilters: [{ "reply.userId": userId }] }
+        )
+
         user.password = null;
         res.status(200).json({ user: user });
 
@@ -176,5 +188,5 @@ const getUserProfile = async (req, res) => {
         console.log("error in getUserProfile:", err.message);
     }
 }
- 
+
 export { getUserProfile, signupUser, loginUser, logoutUser, followunfollowUser, updateUser };

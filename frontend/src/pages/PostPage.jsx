@@ -5,37 +5,67 @@ import Comment from "../components/comment"
 import { use, useEffect, useState } from "react"
 import useGetUserProfiler from "../hooks/useGetUserProfile"
 import useShowToast from "../hooks/useShowToast"
-import { useParams } from "react-router-dom"  
+import { useNavigate, useParams } from "react-router-dom"
 import { DeleteIcon } from "@chakra-ui/icons"
 import { formatDistanceToNow } from "date-fns"
-import { useRecoilValue } from "recoil"
+import { useRecoilState, useRecoilValue } from "recoil"
 import userAtom from "../atoms/userAtom"
+import postAtoms from "../atoms/postAtoms"
 
-const postpage = () => {
-  const [liked, setliked] = useState(false)
+const PostPage = () => {
+  // const [liked, setliked] = useState(false)
+  // const [post, setPost] = useState(null);
   const { user, loading } = useGetUserProfiler();
+  const [posts,setPosts] = useRecoilState(postAtoms);
   const showToast = useShowToast();
   const { pid } = useParams();
   const currentUser = useRecoilValue(userAtom);
+  const navigate= useNavigate();
+
+  const currentPost =posts[0];
   useEffect(() => {
     const getPost = async () => {
+      setPosts([]);
       try {
-        const res = await fetch(`/api/post/${pid}`); // Replace with actual post ID
+        const res = await fetch(`/api/posts/${pid}`); // Replace with actual post ID
         const data = await res.json();
         if (data.error) {
           showToast("Error", data.error, "error");
           return;
         }
         console.log(data);
-        getPost(data);
+        setPosts([data]);
       } catch (error) {
-        console.error("Error fetching post:", error);
+        showToast("Error", error.message, "error");
+        console.log("Error fetching post:");
       }
     };
     getPost();
-  }, [showToast, pid]);
+  }, [showToast, pid,setPosts]);
 
-  const handleDeletePost = async (e) => {}
+  const handleDeletePost = async () => {
+    try {
+      e.preventDefault();
+      if (!window.confirm("Are you sure you want to delete this post?")) return;
+      const res = await fetch(`/api/posts/${currentPost._id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${currentUser?.token}`
+        }
+      });
+      const data = await res.json();
+      if (data.error) {
+        showToast("Error", data.error, "error");
+        return;
+      }
+      showToast("Success", "Post deleted successfully", "success");
+      navigate(`/${user.username}`); 
+    } catch (error) {
+      showToast("Error", error.message, "error");
+      console.log("Error deleting post:", error);
+    }
+  }
 
   if (!user && loading) {
     return (
@@ -45,7 +75,7 @@ const postpage = () => {
     )
   }
 
-  if (!post) return null;
+  if (!currentPost) return null;
 
   return (
     <>
@@ -60,36 +90,23 @@ const postpage = () => {
 
         <Flex gap={4} alignItems={"center"}>
           <Text fontSize={"xs"} width={36} textAlign={"right"} color={"gray.light"} >
-            {formatDistanceToNow(new Date(post.createdAt))} ago
+            {formatDistanceToNow(new Date(currentPost.createdAt))} ago
           </Text>
-          {currentUser?._id === user._id && <DeleteIcon size={20} onClick={handleDeletePost} />}
+
+          {currentUser?._id === user._id && <DeleteIcon cursor={"pointer"} size={20} onClick={handleDeletePost} />}
         </Flex>
       </Flex>
 
-      <Flex gap={4} alignItems={"center"}>
-        <Text fontSize={"xs"} width={36} textAlign={"right"} color={"gray.light"} >
-          {formatDistanceToNow(new Date(post.createdAt))} ago
-        </Text>
-        {currentUser?._id === user._id && <DeleteIcon size={20} onClick={handleDeletePost} />}
-      </Flex>
-
-      <Text my={3}>{post.text}</Text>
-      {post.img && (
+      <Text my={3}>{currentPost.text}</Text>
+      {currentPost.img && (
         <Box borderRadius={6} overflow={"hidden"} border={"1px solid "} borderColor={"gray.light"} >
-          <Image src={post.img} w={"full"} />
+          <Image src={currentPost.img} w={"full"} />
         </Box>
       )}
       <Flex gap={3} my={3}>
-        <Actions post={post} />
+        <Actions post={currentPost} />
       </Flex>
-      <Flex alignItems={"center"} gap={2}>
-        <Text color={"gray.light"} fontSize={"sm"}>{post.replies.length} replies</Text>
-        <Box w={0.5} h={0.5} borderRadius={"full"} bg={"gray.light"}></Box>
-        <Text color={"gray.light"} fontSize={"sm"}>
-          {post.likes.length} likes
-        </Text>
 
-      </Flex>
 
       <Divider my={4} />
       <Flex justifyContent={"space-between"}>
@@ -100,6 +117,13 @@ const postpage = () => {
         <Button>Get</Button>
       </Flex>
       <Divider my={4} />
+      {currentPost.replies.map(reply=>(
+        <Comment 
+        key={reply._id}
+        reply={reply}  
+        lastReply={currentPost.replies[currentPost.replies.length - 1] === reply}    
+      />
+      ))}
       {/* <Comment 
       comment ="looks really good"
       createdAt="2d" 
@@ -134,4 +158,4 @@ const postpage = () => {
   );
 };
 
-export default postpage
+export default PostPage
