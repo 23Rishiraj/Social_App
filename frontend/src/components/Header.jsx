@@ -8,6 +8,8 @@ import { HiLogout } from "react-icons/hi";
 import useLogout from "../hooks/useLogout";
 import authScreenAtom from "../atoms/authAtoms";
 
+import { BsFillChatQuoteFill } from 'react-icons/bs';
+
 const Header = () => {
   const { colorMode, toggleColorMode } = useColorMode();
   const user = useRecoilValue(userAtom);
@@ -42,6 +44,11 @@ const Header = () => {
           <Link as={RouterLink} to={`/${user.username}`}>
             <RxAvatar size={24} />
           </Link>
+
+          <Link as={RouterLink} to={"/chat"}>
+            <BsFillChatQuoteFill size={24} />
+          </Link>
+
           <Button
             size={"xs"}
             onClick={logout}
