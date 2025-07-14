@@ -12,18 +12,17 @@ const Chatpage = () => {
             w={{
                 base: "100%",
                 md: "80%",
-                lg: "60%",
-                xl: "50%",
-                "2xl": "40%"
+                lg: "750px",
+    
             }}
-            transform={"translateX(-50%)"}
             p={4}
+            transform={"translateX(-50%)"}
         >
             <Flex
                 gap={4}
                 flexDirection={{
                     base: "column",
-                    md: "row"
+                    md: "row",
                 }}
                 // justifyContent={"space-between"}
                 // alignItems={"center"}
@@ -33,13 +32,15 @@ const Chatpage = () => {
                 }}
                 mx={"auto"}
             >
-                <Flex flex={30}
+                <Flex flex="30" 
                     flexDirection={"column"}
-                    gap={4}
-                    p={4}
-                    borderRadius={"md"}
-                    bg={useColorModeValue("gray.50", "gray.800")}
-                    h={"full"}
+                    gap={2}
+                    maxW={{
+                        sm: "250px",
+                        md: "full",
+                    }}
+                    mx={"auto"}
+                    
                 >
                     <Text fontWeight={"700"} color={useColorModeValue("gray.600", "gray.400")} >
                         Your conversations
@@ -53,8 +54,8 @@ const Chatpage = () => {
                         </Flex>
                     </form>
 
-                    {true && (
-                        [0, 1, 2, 324, 3434].map((_, i) => (
+                    {false && (
+                        [0, 1, 2, 3, 4].map((_, i) => (
                             <Flex key={i} alignItems={"center"} gap={2} mt={2} p={2} borderRadius={"md"} _hover={{ bg: useColorModeValue("gray.100", "gray.700") }}>
                                 <Box>
                                     <SkeletonCircle size='10' />
@@ -73,16 +74,16 @@ const Chatpage = () => {
                 </Flex>
 
                 <Flex
-                    flexDir={"column"}
-                    flex={70}
+                    flex={0}
+                    borderRadius={"md"}
                     p={2}
+                    flexDir={"column"}
                     alignItems={"center"}
                     justifyContent={"center"}
-                    borderRadius={"md"}
                     height={"400px"}
                 >
-                    <GiConversation size={50} />
-                    <Text fontSize={20}> Select a conversations</Text>
+                    {/* <GiConversation size={100} />
+                    <Text fontSize={20}> Select a conversations</Text> */}
                 </Flex>
                 <MessageContainer/>
             </Flex>
