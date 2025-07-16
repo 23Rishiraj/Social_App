@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import Conversion from '../../frontend/src/components/Conversion';
+import Conversation from './conversationModal.js';
 
 const messageSchema = new mongoose.Schema({
     conversionId: {type:mongoose.Schema.Types.ObjectId, ref: 'Conversion'},

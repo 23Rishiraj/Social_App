@@ -27,7 +27,7 @@ app.use(cookieParser());//middleware parse cookie data in req.cookies
 // Routes
 app.use("/api/users",userRoutes);
 app.use("/api/posts",postRoutes);
-app.use("/api/message",messageRoutes);
+app.use("/api/messages",messageRoutes);
 
 
 app.listen(PORT, () => console.log(`server started at https://localhost:${PORT}`) );
