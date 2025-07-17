@@ -1,7 +1,13 @@
 import { Avatar, AvatarBadge, Flex, Image, Stack, Text, useColorModeValue, WrapItem } from '@chakra-ui/react'
 import React from 'react'
+import { useRecoilValue } from 'recoil';
+import {userAtom} from '../atoms/userAtom'
+import { BsCheck2All } from 'react-icons/bs';
 
-const Conversion = () => {
+const Conversion = ({conversation}) => {
+    const user =conversation.participants[0];
+    const currentUser= useRecoilValue(userAtom)
+    const lastMessage = conversation.lastMessage;
     return (
         <Flex
             gap={4}
@@ -26,10 +32,11 @@ const Conversion = () => {
 
             <Stack direction={"column"} fontSize={"sm"}>
                 <Text fontWeight={"600"} display={"flex"} alignItems={"center"}>
-                    Any Name <Image src='/verified.png' w={4} h={4} ml={1} />
+                    {user.username } <Image src='/verified.png' w={4} h={4} ml={1} />
                 </Text>
                 <Text fontSize={"xs"} display={"flex"} alignItems={"center"} gap={1}>
-                    any Message .......
+                    {currentUser._id === lastMessage.sender ? <BsCheck2All size={16} /> : ""}
+                    {lastMessage.text.length>14  ? lastMessage.text.substring(0, 14) + "..." : lastMessage.text}
                 </Text>
             </Stack>
         </Flex>

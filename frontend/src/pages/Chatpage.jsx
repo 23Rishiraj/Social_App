@@ -1,11 +1,37 @@
 import { SearchIcon } from '@chakra-ui/icons'
 import { Box, Button, Flex, Input, Skeleton, SkeletonCircle, Text, useColorModeValue } from '@chakra-ui/react'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Conversion from '../components/Conversion'
-import { GiConversation } from 'react-icons/gi'
+import useShowToast from '../hooks/useShowToast'
 import MessageContainer from '../components/MessageContainer'
+import { useRecoilState } from 'recoil'
+import { conversationsAtom } from '../atoms/messagesAtoms'
 
 const Chatpage = () => {
+    const showToast= useShowToast()
+    const [loadingConversations, setLoadingConversations] = useState(true);
+    const [conversations,setConversations] =useRecoilState(conversationsAtom)
+    useEffect(()=>{
+        const getConversations = async () => {
+            try {
+                const res = await fetch("/api/messages/conversations");
+                const data = await res.json();
+                if(data.error) {
+                    showToast("Error", data.error, "error");
+                    return;
+                }
+                console.log(data);
+                setConversations(data);
+            } catch (error) {
+                showToast("Error","error.message", "error");
+                console.log(error);
+            } finally{
+                setLoadingConversations(false);
+            }
+        }
+        getConversations();
+    },[showToast])
+
     return (
         <Box position={"absolute"}
             left={"50%"}
@@ -54,7 +80,7 @@ const Chatpage = () => {
                         </Flex>
                     </form>
 
-                    {false && (
+                    {loadingConversations && (
                         [0, 1, 2, 3, 4].map((_, i) => (
                             <Flex key={i} alignItems={"center"} gap={2} mt={2} p={2} borderRadius={"md"} _hover={{ bg: useColorModeValue("gray.100", "gray.700") }}>
                                 <Box>
@@ -67,9 +93,12 @@ const Chatpage = () => {
                             </Flex>
                         ))
                     )}
-                    <Conversion />
-                    <Conversion />
-                    <Conversion />
+                    {!loadingConversations && (
+                        conversations.map(conversation=>(
+                            <Conversion key={conversation._id} conversation={conversation} />
+                        ))
+                    )}
+                    
                     
                 </Flex>
 

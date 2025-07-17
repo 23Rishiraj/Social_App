@@ -20,7 +20,7 @@ async function sendMessage(req, res) {
 
         const newMessage = new Message({
             conversionId: conversation._id,
-            senderId: senderId,
+            sender: senderId,
             text: message,
         });
 
@@ -47,7 +47,7 @@ async function getMessages(req, res) {
         })
 
         if (!conversation) {
-            return res.status(404).json({ message: "Conversation not found" });
+            return res.status(404).json({ error: "Conversation not found" });
         }
 
         const messages = await Message.find({ conversionId: conversation._id })
@@ -58,7 +58,7 @@ async function getMessages(req, res) {
 
     } catch (error) {
         res.status(500).json({ error: error.message });
-        coonsole.error("Error in getMessage:", error);
+        console.error("Error in getMessage:", error);
     }
 }
 
@@ -69,6 +69,12 @@ async function getConverations (req, res) {
             path: "participants",
             select: "username profilePic"
         }).sort({ updatedAt: -1 }); // sort by last updated
+
+        conversations.forEach(conversation => {
+            conversation.participants= conversation.participants.filter(
+                participant=> participant._id.toString() !== userId.toString()
+            );
+        })
 
         res.status(200).json(conversations);
 
