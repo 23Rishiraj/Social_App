@@ -5,12 +5,15 @@ import Conversion from '../components/Conversion'
 import useShowToast from '../hooks/useShowToast'
 import MessageContainer from '../components/MessageContainer'
 import { useRecoilState } from 'recoil'
-import { conversationsAtom } from '../atoms/messagesAtoms'
+import { conversationsAtom, selectedConversationAtom } from '../atoms/messagesAtoms'
+import { GiConversation } from 'react-icons/gi'
 
 const Chatpage = () => {
     const showToast= useShowToast()
     const [loadingConversations, setLoadingConversations] = useState(true);
-    const [conversations,setConversations] =useRecoilState(conversationsAtom)
+    const [conversations,setConversations] =useRecoilState(conversationsAtom);
+    const [selectedConversation, setSelectedConversation] = useRecoilState(selectedConversationAtom);
+    console.log("conversation", conversations, "selectedConversation", selectedConversation);
     useEffect(()=>{
         const getConversations = async () => {
             try {
@@ -97,10 +100,9 @@ const Chatpage = () => {
                         conversations.map(conversation=>(
                             <Conversion key={conversation._id} conversation={conversation} />
                         ))
-                    )}
-                    
-                    
+                    )}  
                 </Flex>
+                {!selectedConversation._id && (
 
                 <Flex
                     flex={0}
@@ -111,10 +113,11 @@ const Chatpage = () => {
                     justifyContent={"center"}
                     height={"400px"}
                 >
-                    {/* <GiConversation size={100} />
-                    <Text fontSize={20}> Select a conversations</Text> */}
+                    <GiConversation size={100} />
+                    <Text fontSize={20}> Select a conversations</Text>
                 </Flex>
-                <MessageContainer/>
+                 )} 
+                {selectedConversation._id && <MessageContainer/>}
             </Flex>
         </Box>
     )
