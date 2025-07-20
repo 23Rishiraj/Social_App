@@ -9,31 +9,31 @@ import { conversationsAtom, selectedConversationAtom } from '../atoms/messagesAt
 import { GiConversation } from 'react-icons/gi'
 
 const Chatpage = () => {
-    const showToast= useShowToast()
+    const showToast = useShowToast()
     const [loadingConversations, setLoadingConversations] = useState(true);
-    const [conversations,setConversations] =useRecoilState(conversationsAtom);
+    const [conversations, setConversations] = useRecoilState(conversationsAtom);
     const [selectedConversation, setSelectedConversation] = useRecoilState(selectedConversationAtom);
     console.log("conversation", conversations, "selectedConversation", selectedConversation);
-    useEffect(()=>{
+    useEffect(() => {
         const getConversations = async () => {
             try {
                 const res = await fetch("/api/messages/conversations");
                 const data = await res.json();
-                if(data.error) {
+                if (data.error) {
                     showToast("Error", data.error, "error");
                     return;
                 }
                 console.log(data);
                 setConversations(data);
             } catch (error) {
-                showToast("Error","error.message", "error");
+                showToast("Error", "error.message", "error");
                 console.log(error);
-            } finally{
+            } finally {
                 setLoadingConversations(false);
             }
         }
         getConversations();
-    },[showToast])
+    }, [showToast ,setConversations])
 
     return (
         <Box position={"absolute"}
@@ -42,7 +42,7 @@ const Chatpage = () => {
                 base: "100%",
                 md: "80%",
                 lg: "750px",
-    
+
             }}
             p={4}
             transform={"translateX(-50%)"}
@@ -61,7 +61,7 @@ const Chatpage = () => {
                 }}
                 mx={"auto"}
             >
-                <Flex flex="30" 
+                <Flex flex="30"
                     flexDirection={"column"}
                     gap={2}
                     maxW={{
@@ -69,7 +69,7 @@ const Chatpage = () => {
                         md: "full",
                     }}
                     mx={"auto"}
-                    
+
                 >
                     <Text fontWeight={"700"} color={useColorModeValue("gray.600", "gray.400")} >
                         Your conversations
@@ -83,9 +83,9 @@ const Chatpage = () => {
                         </Flex>
                     </form>
 
-                    {loadingConversations && (
+                    {loadingConversations && 
                         [0, 1, 2, 3, 4].map((_, i) => (
-                            <Flex key={i} alignItems={"center"} gap={2} mt={2} p={2} borderRadius={"md"} _hover={{ bg: useColorModeValue("gray.100", "gray.700") }}>
+                            <Flex key={i}  alignItems={"center"} gap={2} mt={2} p={2} borderRadius={"md"} _hover={{ bg: useColorModeValue("gray.100", "gray.700") }}>
                                 <Box>
                                     <SkeletonCircle size='10' />
                                 </Box>
@@ -95,29 +95,28 @@ const Chatpage = () => {
                                 </Flex>
                             </Flex>
                         ))
-                    )}
-                    {!loadingConversations && (
-                        conversations.map(conversation=>(
+                    }
+                    {!loadingConversations &&
+                        conversations.map((conversation) => (
                             <Conversion key={conversation._id} conversation={conversation} />
                         ))
-                    )}  
+                    }
                 </Flex>
                 {!selectedConversation._id && (
-
-                <Flex
-                    flex={0}
-                    borderRadius={"md"}
-                    p={2}
-                    flexDir={"column"}
-                    alignItems={"center"}
-                    justifyContent={"center"}
-                    height={"400px"}
-                >
-                    <GiConversation size={100} />
-                    <Text fontSize={20}> Select a conversations</Text>
-                </Flex>
-                 )} 
-                {selectedConversation._id && <MessageContainer/>}
+                    <Flex
+                        flex={0}
+                        borderRadius={"md"}
+                        p={2}
+                        flexDir={"column"}
+                        alignItems={"center"}
+                        justifyContent={"center"}
+                        height={"400px"}
+                    >
+                        <GiConversation size={100} />
+                        <Text fontSize={20}> Select a conversations</Text>
+                    </Flex>
+                )}
+                {selectedConversation._id && <MessageContainer />}
             </Flex>
         </Box>
     )

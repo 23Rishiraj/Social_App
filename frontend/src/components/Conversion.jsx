@@ -2,17 +2,17 @@ import { Avatar, AvatarBadge, Flex, Image, Stack, Text, useColorMode, useColorMo
 import React from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil';
 import userAtom from '../atoms/userAtom'
-import { BsCheck2All } from 'react-icons/bs';
+import { BsCheck2All, BsFillImageFill } from 'react-icons/bs';
 import { selectedConversationAtom } from '../atoms/messagesAtoms';
 
 const Conversion = ({conversation}) => {
     const currentUser= useRecoilValue(userAtom)
-    const user = conversation?.participants?.[0] || {};
-    const lastMessage = conversation?.lastMessage || {};
+    const user = conversation.participants?.[0];
+    const lastMessage = conversation.lastMessage;
     const [selectConversation, setSelectConversation] = useRecoilState(selectedConversationAtom);
     const colorMode = useColorMode();
 
-    console.log("Conversion", conversation, user, lastMessage, selectConversation);
+    console.log("Selected Conversion", selectConversation);
     return (
         <Flex
             gap={4}
@@ -51,8 +51,8 @@ const Conversion = ({conversation}) => {
                 </Text>
                 <Text fontSize={"xs"} display={"flex"} alignItems={"center"} gap={1}>
                     {/* {console.log(currentUser._id,user._id, lastMessage.sender,)} */}
-                    {currentUser?._id === lastMessage.sender ? <BsCheck2All size={16} /> : ""}
-                    {lastMessage.text.length>14  ? lastMessage.text.substring(0, 14) + "..." : lastMessage.text}
+                    {currentUser._id === lastMessage.sender ? <BsCheck2All size={16} /> : ""}
+                    {lastMessage.text.length>14  ? lastMessage.text.substring(0, 14) + "..." : lastMessage.text || <BsFillImageFill size={16} />}
                 </Text>
             </Stack>
         </Flex>
