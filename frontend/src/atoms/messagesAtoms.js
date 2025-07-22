@@ -1,7 +1,7 @@
 import {atom} from 'recoil';
 
 export const conversationsAtom= atom({
-    key: 'conversationAtom',
+    key: 'conversationsAtom',
     default: [],
 });
 

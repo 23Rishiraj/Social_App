@@ -1,7 +1,7 @@
 import { SearchIcon } from '@chakra-ui/icons'
 import { Box, Button, Flex, Input, Skeleton, SkeletonCircle, Text, useColorModeValue } from '@chakra-ui/react'
-import React, { useEffect, useState } from 'react'
-import Conversion from '../components/Conversion'
+import { useEffect, useState } from 'react'
+import Conversation from '../components/Conversation'
 import useShowToast from '../hooks/useShowToast'
 import MessageContainer from '../components/MessageContainer'
 import { useRecoilState } from 'recoil'
@@ -97,8 +97,8 @@ const Chatpage = () => {
                         ))
                     }
                     {!loadingConversations &&
-                        conversations.map((conversation) => (
-                            <Conversion key={conversation._id} conversation={conversation} />
+                        conversations.map(conversation => (
+                            <Conversation key={conversation._id} conversation={conversation} />
                         ))
                     }
                 </Flex>

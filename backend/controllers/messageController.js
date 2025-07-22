@@ -19,7 +19,7 @@ async function sendMessage(req, res) {
         }
 
         const newMessage = new Message({
-            conversionId: conversation._id,
+            conversationId: conversation._id,
             sender: senderId,
             text: message,
         });
@@ -50,7 +50,7 @@ async function getMessages(req, res) {
             return res.status(404).json({ error: "Conversation not found" });
         }
 
-        const messages = await Message.find({ conversionId: conversation._id })
+        const messages = await Message.find({ conversationId: conversation._id })
             .sort({ createdAt: 1 }) // new message at botton on old messages on top
         // .populate('senderId', 'name profilePicture')
 
@@ -62,26 +62,27 @@ async function getMessages(req, res) {
     }
 }
 
-async function getConverations (req, res) {
+async function getConversations (req, res) {
     const userId = req.user._id; //current user id
     try {
         const conversations = await Conversation.find({ participants: userId }).populate({
             path: "participants",
             select: "username profilePic"
-        }).sort({ updatedAt: -1 }); // sort by last updated
+        })
+        // .sort({ updatedAt: -1 }); // sort by last updated
 
         conversations.forEach(conversation => {
             conversation.participants= conversation.participants.filter(
                 participant=> participant._id.toString() !== userId.toString()
             );
-        })
+        });
 
         res.status(200).json(conversations);
 
     } catch (error) {
         res.status(500).json({ error: error.message });
-        console.error("Error in getConverations:", error);
+        console.error("Error in getConversations:", error);
 
     }
 }
-export { sendMessage, getMessages, getConverations };
+export { sendMessage, getMessages, getConversations };

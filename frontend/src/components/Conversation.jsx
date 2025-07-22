@@ -1,18 +1,17 @@
 import { Avatar, AvatarBadge, Flex, Image, Stack, Text, useColorMode, useColorModeValue, WrapItem } from '@chakra-ui/react'
-import React from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil';
 import userAtom from '../atoms/userAtom'
 import { BsCheck2All, BsFillImageFill } from 'react-icons/bs';
 import { selectedConversationAtom } from '../atoms/messagesAtoms';
 
-const Conversion = ({conversation}) => {
+const Conversation = ({conversation}) => {
     const currentUser= useRecoilValue(userAtom)
-    const user = conversation.participants?.[0];
+    const user = conversation.participants[0];
     const lastMessage = conversation.lastMessage;
-    const [selectConversation, setSelectConversation] = useRecoilState(selectedConversationAtom);
+    const [selectedConversation, setSelectedConversation] = useRecoilState(selectedConversationAtom);
     const colorMode = useColorMode();
 
-    console.log("Selected Conversion", selectConversation);
+    console.log("Selected Conversation", selectedConversation);
     return (
         <Flex
             gap={4}
@@ -23,13 +22,13 @@ const Conversion = ({conversation}) => {
                 bg: useColorModeValue("gray.600", "gray.700"),
                 color: "white"
             }}
-            onClick={()=> setSelectConversation({
+            onClick={()=> setSelectedConversation({
                 _id:conversation._id,
                 userId: user._id,
                 username: user.username,
-                userProfilePic: user.profilePic || "",
+                userProfilePic: user.profilePic ,
             })}
-            bg={selectConversation?._id === conversation._id ? (colorMode === "light" ? "gray.300" : "gray.dark")
+            bg={selectedConversation?._id === conversation._id ? (colorMode === "light" ? "gray.300" : "gray.dark")
             : ""}
             borderRadius={"md"}
         >
@@ -59,4 +58,4 @@ const Conversion = ({conversation}) => {
     )
 }
 
-export default Conversion    
+export default Conversation    
