@@ -5,8 +5,8 @@ import { BsCheck2All, BsFillImageFill } from 'react-icons/bs';
 import { selectedConversationAtom } from '../atoms/messagesAtoms';
 
 const Conversation = ({conversation}) => {
-    const currentUser= useRecoilValue(userAtom)
     const user = conversation.participants[0];
+    const currentUser= useRecoilValue(userAtom)
     const lastMessage = conversation.lastMessage;
     const [selectedConversation, setSelectedConversation] = useRecoilState(selectedConversationAtom);
     const colorMode = useColorMode();
@@ -49,7 +49,8 @@ const Conversation = ({conversation}) => {
                     {user.username || "Unknown" } <Image src='/verified.png' w={4} h={4} ml={1} />
                 </Text>
                 <Text fontSize={"xs"} display={"flex"} alignItems={"center"} gap={1}>
-                    {/* {console.log(currentUser._id,user._id, lastMessage.sender,)} */}
+                    {console.log(currentUser._id,user._id, lastMessage.sender)}
+                    {/* 683af11e089a1ef4725b19a2 67e997cde00d6ebae38f314a 67e997cde00d6ebae38f314a */}
                     {currentUser._id === lastMessage.sender ? <BsCheck2All size={16} /> : ""}
                     {lastMessage.text.length>14  ? lastMessage.text.substring(0, 14) + "..." : lastMessage.text || <BsFillImageFill size={16} />}
                 </Text>
@@ -59,3 +60,5 @@ const Conversation = ({conversation}) => {
 }
 
 export default Conversation    
+
+

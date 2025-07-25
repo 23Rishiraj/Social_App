@@ -96,8 +96,10 @@ const Chatpage = () => {
                             </Flex>
                         ))
                     }
+                            {console.log(conversations._id,conversations)}
+
                     {!loadingConversations &&
-                        conversations.map(conversation => (
+                        conversations.map((conversation) => (
                             <Conversation key={conversation._id} conversation={conversation} />
                         ))
                     }
@@ -116,6 +118,7 @@ const Chatpage = () => {
                         <Text fontSize={20}> Select a conversations</Text>
                     </Flex>
                 )}
+                {console.log("selectedConversation", selectedConversation._id)}
                 {selectedConversation._id && <MessageContainer />}
             </Flex>
         </Box>

@@ -13,7 +13,7 @@ async function sendMessage(req, res) {
         if (!conversation) {
             conversation = new Conversation({
                 participants: [senderId, recipientId],
-                lastMessage: { text: message, sender: senderId }
+                lastMessage: { text: message, sender: senderId },
             });
             await conversation.save();
         }
@@ -26,7 +26,7 @@ async function sendMessage(req, res) {
 
         await Promise.all([
             newMessage.save(),
-            Conversation.updateOne({
+            conversation.updateOne({
                 lastMessage: { text: message, sender: senderId }
             },)
         ])
@@ -71,9 +71,9 @@ async function getConversations (req, res) {
         })
         // .sort({ updatedAt: -1 }); // sort by last updated
 
-        conversations.forEach(conversation => {
+        conversations.forEach((conversation) => {
             conversation.participants= conversation.participants.filter(
-                participant=> participant._id.toString() !== userId.toString()
+                (participant)=> participant._id.toString() !== userId.toString()
             );
         });
 

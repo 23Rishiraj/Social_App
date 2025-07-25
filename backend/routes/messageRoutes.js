@@ -6,7 +6,7 @@ import { getConversations } from '../controllers/messageController.js';
 
 const router = express.Router();
 
-router.get("/:conversations",protectRoutes,getConversations);
+router.get("/conversations",protectRoutes,getConversations);
 router.get("/:otherUserId",protectRoutes,getMessages);
 router.post("/",protectRoutes,sendMessage);
 

@@ -10,7 +10,7 @@ import userAtom from '../atoms/userAtom'
 
 const MessageContainer = () => {
     const showToast = useShowToast();
-    const [selectedConversation,setSelectedConversation]  =useRecoilState(selectedConversationAtom);
+    const selectedConversation  =useRecoilValue(selectedConversationAtom);
     const [loadingMessages, setLoadingMessages] = useState(true);
     const [messages, setMessages] = useState([]);
     const currentUser = useRecoilValue(userAtom);
@@ -88,7 +88,8 @@ const MessageContainer = () => {
 							direction={"column"}
 							ref={messages.length - 1 === messages.indexOf(message) ? messageEndRef : null}
 						>
-							<Message key={message._id} message={message} ownMessage={currentUser._id === message.sender} />
+                            {console.log(message._id,message,message.sender,currentUser._id)}
+							<Message message={message} key={message._id} ownMessage={currentUser._id === message.sender} />
 						</Flex>
 					))}
 
