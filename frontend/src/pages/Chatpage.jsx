@@ -45,6 +45,7 @@ const Chatpage = () => {
         setSearchingUser(true)
         if (!searchConversation) {
             showToast("Error", "Please enter a username to search", "error");
+            setSearchingUser(false);
             return;
         }
         setSearchingUser(true);
@@ -53,6 +54,7 @@ const Chatpage = () => {
             const searchuser = await res.json();
             if (searchuser.error) {
                 showToast("Error", searchuser.error, "error");
+                setSearchingUser(false);
                 return;
             }
             console.log(searchuser);
@@ -73,6 +75,22 @@ const Chatpage = () => {
                 showToast("Info", "Conversation already exists", "info");
                 return;
             }
+
+            const mockConversation ={
+                mock:true,
+                lastMessage: {
+                    text: "",
+                    sender:"",
+                },
+                _id:Date.now(),
+                participants: [{
+                    _id: searchuser._id,
+                    username: searchuser.username,
+                    profilePic: searchuser.profilePic,
+                }]
+            }
+
+            setConversations((prevConversations) => [...prevConversations, mockConversation]);
         } catch (error) {
             showToast("Error", error.message, "error");
         } finally {
