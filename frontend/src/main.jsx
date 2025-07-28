@@ -2,43 +2,46 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
-import {ChakraProvider ,extendTheme,ColorModeScript} from "@chakra-ui/react";
-import{ mode } from '@chakra-ui/theme-tools';
+import { ChakraProvider, extendTheme, ColorModeScript } from "@chakra-ui/react";
+import { mode } from '@chakra-ui/theme-tools';
 
 import { BrowserRouter } from 'react-router-dom';
 import { RecoilRoot } from 'recoil';
+import { SocketContextProvider } from './context/SocketContext.jsx';
 
-const style ={
-  global:(props)=>({
-    body:{
-      color:mode('gray.800','whiteAlpha.900')(props),
-      bg:mode('gray.100','#101010')(props)
+const style = {
+  global: (props) => ({
+    body: {
+      color: mode('gray.800', 'whiteAlpha.900')(props),
+      bg: mode('gray.100', '#101010')(props)
     }
   })
 };
 
-const config={
-  initialcolormode:"dark",
-  usesystemcolormode:true
+const config = {
+  initialcolormode: "dark",
+  usesystemcolormode: true
 };
 
-const colors={
-  gray:{
-    light:"#616161",
-    dark:"rgb(30,30,30)"
+const colors = {
+  gray: {
+    light: "#616161",
+    dark: "rgb(30,30,30)"
   }
 };
 
-const theme=extendTheme({config,style,colors})
+const theme = extendTheme({ config, style, colors })
 createRoot(document.getElementById('root')).render(
   // <StrictMode>
-    <RecoilRoot>
+  <RecoilRoot>
     <BrowserRouter>
-    <ChakraProvider theme={theme}>
-    <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-    <App />
-    </ChakraProvider>
+      <ChakraProvider theme={theme}>
+        <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+        <SocketContextProvider>
+          <App />
+        </SocketContextProvider>
+      </ChakraProvider>
     </BrowserRouter>
-    </RecoilRoot>
+  </RecoilRoot>
   // </StrictMode>
 )

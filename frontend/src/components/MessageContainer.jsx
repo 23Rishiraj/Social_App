@@ -6,6 +6,7 @@ import useShowToast from '../hooks/useShowToast'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import { selectedConversationAtom } from '../atoms/messagesAtoms'
 import userAtom from '../atoms/userAtom'
+import { useSocket } from '../context/SocketContext'
 
 
 const MessageContainer = () => {
@@ -15,6 +16,15 @@ const MessageContainer = () => {
     const [messages, setMessages] = useState([]);
     const currentUser = useRecoilValue(userAtom);
     const messageEndRef = useRef(null);
+    const socket =useSocket();
+
+    useEffect(()=>{
+        socket?.on("newMessage", (message) => {
+            console.log("new message received", message);
+            setMessages((prevMessages) => [...prevMessages, message]);
+        });
+        return () =>  socket.off("newMessage");
+    },[socket]);
 
     useEffect(()=>{
         const getMessages = async ()=>{

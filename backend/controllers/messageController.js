@@ -1,5 +1,6 @@
 import Conversation from "../models/conversationModal.js";
 import Message from "../models/messageModal.js";
+import { getRecipientSocketId, io } from "../socket/socket.js"; 
 
 async function sendMessage(req, res) {
     try {
@@ -29,7 +30,12 @@ async function sendMessage(req, res) {
             conversation.updateOne({
                 lastMessage: { text: message, sender: senderId }
             },)
-        ])
+        ]);
+
+        const  recipientSocketId = getRecipientSocketId(recipientId);
+        if(recipientId){
+            io.to(recipientSocketId).emit("newMessage", newMessage);
+        }
 
         res.status(201).json(newMessage);
     } catch (error) {
