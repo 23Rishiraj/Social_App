@@ -16,7 +16,7 @@ const MessageContainer = () => {
     const [messages, setMessages] = useState([]);
     const currentUser = useRecoilValue(userAtom);
     const messageEndRef = useRef(null);
-    const socket =useSocket();
+    const {socket} =useSocket();
 
     useEffect(()=>{
         socket?.on("newMessage", (message) => {
@@ -44,6 +44,7 @@ const MessageContainer = () => {
                 setMessages(data);
             } catch (error) {
                 showToast("Error", error.message, "error");
+                
             } finally{
                 setLoadingMessages(false);
             }
