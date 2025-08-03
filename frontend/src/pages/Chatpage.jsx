@@ -1,6 +1,6 @@
 import { SearchIcon } from '@chakra-ui/icons'
 import { Box, Button, Flex, Input, Skeleton, SkeletonCircle, Text, useColorModeValue } from '@chakra-ui/react'
-import { useEffect, useState } from 'react'
+import { use, useEffect, useState } from 'react'
 import Conversation from '../components/Conversation'
 import useShowToast from '../hooks/useShowToast'
 import MessageContainer from '../components/MessageContainer'
@@ -20,6 +20,26 @@ const Chatpage = () => {
     const currentUser=useRecoilValue(userAtom)
     const {socket,onlineUsers} = useSocket();
     console.log("conversation", conversations, "selectedConversation", selectedConversation);
+
+    useEffect(() => {
+        socket?.on("messagesSeen", ({ conversationId }) => {
+            setConversations((prev) => {
+                const updatedConversations = prev.map((conversation) => {
+                    if (conversation._id === conversationId) {
+                        return {
+                            ...conversation,
+                            lastMessage: {
+                                ...conversation.lastMessage,
+                                seen: true,
+                            }
+                        }
+                    }
+                    return conversation;
+                })
+                return updatedConversations;
+            })
+        })
+    },[socket, setConversations]);
 
     useEffect(() => {
         const getConversations = async () => {

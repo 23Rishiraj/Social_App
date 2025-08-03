@@ -1,4 +1,4 @@
-import { Avatar, AvatarBadge, Flex, Image, Stack, Text, useColorMode, useColorModeValue, WrapItem } from '@chakra-ui/react'
+import { Avatar, AvatarBadge, Box, Flex, Image, Stack, Text, useColorMode, useColorModeValue, WrapItem } from '@chakra-ui/react'
 import { useRecoilState, useRecoilValue } from 'recoil';
 import userAtom from '../atoms/userAtom'
 import { BsCheck2All, BsFillImageFill } from 'react-icons/bs';
@@ -51,9 +51,12 @@ const Conversation = ({conversation,isOnline}) => {
                 </Text>
                 <Text fontSize={"xs"} display={"flex"} alignItems={"center"} gap={1}>
                     {/* {console.log(currentUser._id,user._id, lastMessage.sender)} */}
-                    {currentUser._id === lastMessage.sender ? <BsCheck2All size={16} /> : ""}
-                    {lastMessage.text.length>14  ? lastMessage.text.substring(0, 14) + "..." : lastMessage.text}
-                    {/* <BsFillImageFill size={16} /> */}
+                    {currentUser._id === lastMessage.sender ? (
+                        <Box color={lastMessage.seen ? "blue.300" : ""} fontWeight={"bold"}>
+                            <BsCheck2All size={16} />
+                        </Box>
+                    ) : ""}
+                    {lastMessage.text.length>14  ? lastMessage.text.substring(0, 14) + "..." : lastMessage.text || <BsFillImageFill size={15} /> }
                 </Text>
             </Stack>
         </Flex>
