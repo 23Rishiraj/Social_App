@@ -1,7 +1,7 @@
 import { Avatar, Center, Flex, Image, Box, Text, Divider, Button, Spinner } from "@chakra-ui/react"
 import { BsThreeDots } from "react-icons/bs"
 import Actions from "../components/Action"
-import Comment from "../components/comment"
+import Comment from "../components/Comment"
 import { use, useEffect, useState } from "react"
 import useGetUserProfiler from "../hooks/useGetUserProfile"
 import useShowToast from "../hooks/useShowToast"
