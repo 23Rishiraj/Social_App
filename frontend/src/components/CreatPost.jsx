@@ -45,7 +45,7 @@ const CreatPost = () => {
             console.log({postedBy: user._id});
             console.log({setPostText, setImgUrl});
 
-            const res = await fetch("https://social-app-backend-mvwm.onrender.com/api/posts/create",{
+            const res = await fetch("/api/posts/create",{
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
