@@ -22,7 +22,7 @@ const Post = ({ post, postedBy }) => {
     useEffect(() => {
         const getUser = async () => {
             try {
-                const res = await fetch("https://social-app-backend-mvwm.onrender.com/api/users/profile/" + postedBy);
+                const res = await fetch("/api/users/profile/" + postedBy);
                 const data = await res.json();
                 console.log(data);
                 if (data.error) {
@@ -42,7 +42,7 @@ const Post = ({ post, postedBy }) => {
         try {
             e.preventDefault();
             if(!window.confirm("Are you sure you want to delete this post?")) return;
-            const res =await fetch(`https://social-app-backend-mvwm.onrender.com/api/posts/${post._id}`, {
+            const res =await fetch(`/api/posts/${post._id}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
