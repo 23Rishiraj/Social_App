@@ -35,7 +35,7 @@ console.log( user);
         setUpdating(true);
         if (updating) return;
         try {
-            const res = await fetch(`https://social-app-backend-mvwm.onrender.com/api/users/follow/${user._id}`, {
+            const res = await fetch(`/api/users/follow/${user._id}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
