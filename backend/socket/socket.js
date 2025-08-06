@@ -8,7 +8,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: "https://chatalyst.onrender.com", // Update with your frontend URL
+        origin:["http://localhost:3000", "https://chatalyst.onrender.com","http://localhost:5000"], // Update with your frontend URL
         methods: ["GET", "POST"],
         // credentials: true,
     },
