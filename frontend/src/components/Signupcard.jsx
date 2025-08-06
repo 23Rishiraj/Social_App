@@ -41,7 +41,7 @@ export default function SignupCard() {
     const handleSignup = async () => {
         // console.log(inputs);
         try {
-            const res = await fetch("/api/users/signup", {
+            const res = await fetch("https://social-app-backend-mvwm.onrender.com/api/users/signup", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
