@@ -11,7 +11,7 @@ const LogoutButton = () => {
     const handleLogout = async() => {
         try {
             //fetch
-            const res = await fetch("/api/users/logout", {
+            const res = await fetch("https://social-app-backend-mvwm.onrender.com/api/users/logout", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
