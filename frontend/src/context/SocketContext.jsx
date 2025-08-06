@@ -17,7 +17,7 @@ export const SocketContextProvider = ({children}) =>{
     useEffect(()=>{
         const socket = io("https://social-app-backend-mvwm.onrender.com", {
             query:{
-                userId: user?._id,
+               userId: user._id,
                 // username: user.username,
                 // userProfilePic: user.profilePic,
                 // token: user.token,
