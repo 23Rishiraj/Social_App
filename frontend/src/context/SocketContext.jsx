@@ -15,6 +15,8 @@ export const SocketContextProvider = ({children}) =>{
     const [onlineUsers, setOnlineUsers] = useState([]);
 
     useEffect(()=>{
+         if (!user || !user._id) return;
+        
         const socket = io("https://social-app-backend-mvwm.onrender.com", {
             query:{
                userId: user?._id,
