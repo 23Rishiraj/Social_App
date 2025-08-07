@@ -15,9 +15,11 @@ export const SocketContextProvider = ({children}) =>{
     const [onlineUsers, setOnlineUsers] = useState([]);
 
     useEffect(()=>{
-        const socket = io("http://localhost:5000", {
+         if (!user || !user._id) return;
+        
+        const socket = io("https://social-app-backend-mvwm.onrender.com", {
             query:{
-                userId: user?._id,
+               userId: user?._id,
                 // username: user.username,
                 // userProfilePic: user.profilePic,
                 // token: user.token,
