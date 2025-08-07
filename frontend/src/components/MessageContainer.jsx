@@ -2,6 +2,7 @@ import { Avatar, Divider, Flex, Image, Skeleton, SkeletonCircle, Text, useColorM
 import {useEffect, useRef, useState } from 'react'
 import Message from '../components/Message'
 import MessageInput from './MessageInput'
+import messagesound from '../assets/sounds/message.mp3'
 import useShowToast from '../hooks/useShowToast'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { conversationsAtom, selectedConversationAtom } from '../atoms/messagesAtoms.js'
@@ -25,6 +26,14 @@ const MessageContainer = () => {
             if(selectedConversation._id === message.conversationId) {
                 setMessages((prev) => [...prev, message]);
             }
+           if (!document.hasFocus()) {
+			const sound = new Audio(messagesound);
+			try {
+				sound.play();
+			} catch (err) {
+				console.warn("Sound play blocked:", err);
+			}
+		}
 
             setConversations((prev) => {
                 const updatedConversations = prev.map((conversation) => {

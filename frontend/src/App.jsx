@@ -15,6 +15,7 @@ import userAtom from "./atoms/userAtom";
 // import LogoutButton from "./components/LogoutButton";
 import CreatPost from "./components/CreatPost";
 import Chatpage from "./pages/Chatpage";
+import Settingspage from "./pages/Settingspage";
 
 function App() {
   const user = useRecoilValue(userAtom);
@@ -23,7 +24,7 @@ function App() {
   return (
     <Box position={"relative"} w={"full"}>
 
-      <Container maxW={pathname === "/" ? "900px" : "620px"}>
+      <Container maxW={pathname === "/" ? {base:"600px",md:"900px"} : "620px"}>
         <Header />
         <Routes>
           <Route path="/" element={user ? <HomePage /> : <Navigate to="/auth" />} />
@@ -40,7 +41,9 @@ function App() {
             ) : <UserPage />} />
           {/* we will send this username to a usePpage */}
           <Route path="/:username/posts/:pid" element={<PostPage />} />
-          <Route path="/chat" element={user ? <Chatpage /> : <Navigate to="/auth" />} />
+          <Route path="/chat" element={user ? <Chatpage /> : <Navigate to={"/auth"} />} />
+          <Route path="/settings" element={user ? <Settingspage /> : <Navigate to={"/auth"} />} />
+
         </Routes>
         {/* {user && <LogoutButton />}  */}
         {/* {user && <CreatPost />} */}

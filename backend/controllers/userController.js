@@ -54,6 +54,11 @@ const loginUser = async (req, res) => {
 
         if (!user || !isPasswordCorrect) return res.status(400).json({ error: "Invalid username and password" });
 
+        if(user.isfrozen){
+            user.isfrozen=false;
+            await user.save();
+        }
+
         generateTokenAndSetCookie(user._id, res);
 
         res.status(200).json({
@@ -98,14 +103,14 @@ const followunfollowUser = async (req, res) => {
 
         if (isFollowing) {
 
-            await User.findByIdAndUpdate(req.user._id, { $pull: { following: id } });
             await User.findByIdAndUpdate(id, { $pull: { followers: req.user._id } });
-            res.status(200).json({ error: "User unfollowed successfully" })
+            await User.findByIdAndUpdate(req.user._id, { $pull: { following: id } });
+            res.status(200).json({ message: "User unfollowed successfully" })
         }
         else {
-            await User.findByIdAndUpdate(req.user._id, { $push: { following: id } });
             await User.findByIdAndUpdate(id, { $push: { followers: req.user._id } });
-            res.status(200).json({ error: "User followed successfully" })
+            await User.findByIdAndUpdate(req.user._id, { $push: { following: id } });
+            res.status(200).json({ message: "User followed successfully" })
 
         }
     } catch (err) {
@@ -189,4 +194,48 @@ const getUserProfile = async (req, res) => {
     }
 }
 
-export { getUserProfile, signupUser, loginUser, logoutUser, followunfollowUser, updateUser };
+const getSuggesteduser =async (req,res) =>{
+    try {
+        const userId=req.user._id;
+        const userfollowedbyu =await User.findById(userId).select("following");
+        const users = await User.aggregate([
+            {
+                $match:{
+                    _id:{$ne:userId},
+                }
+            },
+            {
+                $sample:{size:10}
+            }
+        ])
+
+        const filterUsers =users.filter(user => !userfollowedbyu.following.includes(user._id))
+        const suggestedUsers =filterUsers.slice(0,4);
+
+        suggestedUsers.forEach(user =>user.password = null)
+
+        res.status(200).json(suggestedUsers);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+        console.log("error in getSuggestedUser:", err.message);
+    }
+}
+
+const freezeAccount = async (req,res) => {
+    try {
+        const user = await User.findById(req.user._id);
+        if(!user){
+            return res.status(400).json({error:"User not Found"});
+        }
+
+        user.isfrozen=true;
+        await user.save();
+
+        res.status(200).json({success: true});
+    } catch (error) {
+        res.status(500).json({ error: err.message });
+        console.log("error in freezing the Account:", error.message);
+    }
+}
+
+export { getUserProfile, signupUser, loginUser, logoutUser, followunfollowUser, updateUser,getSuggesteduser,freezeAccount };

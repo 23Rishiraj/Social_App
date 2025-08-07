@@ -35,6 +35,10 @@ const userSchema = mongoose.Schema({
     bio: {
         type: String,
         default: "",
+    },
+    isfrozen:{
+        type:Boolean,
+        default:false,
     }
 },{
     timestramps: true,

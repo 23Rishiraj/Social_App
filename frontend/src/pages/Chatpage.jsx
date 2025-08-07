@@ -121,91 +121,126 @@ const Chatpage = () => {
     }
 
     return (
-        <Box position={"absolute"}
+        <Box
+            position={"absolute"}
             left={"50%"}
             w={{
                 base: "100%",
-                md: "80%",
-                lg: "750px",
-
+                md: "90%",
+                lg: "850px",
+                xl: "1000px"
             }}
-            p={4}
+            p={{ base: 2, md: 6 }}
             transform={"translateX(-50%)"}
+            minH={{ base: "100vh", md: "80vh" }}
+            bg={useColorModeValue("gray.50", "gray.900")}
+            borderRadius={{ base: "none", md: "2xl" }}
+            boxShadow={{ base: "none", md: "2xl" }}
         >
             <Flex
-                gap={4}
-                flexDirection={{
-                    base: "column",
-                    md: "row",
-                }}
-                // justifyContent={"space-between"}
-                // alignItems={"center"}
-                maxW={{
-                    sm: "400px",
-                    md: "full",
-                }}
+                gap={6}
+                flexDirection={{ base: "column", md: "row" }}
+                maxW={{ sm: "400px", md: "full" }}
                 mx={"auto"}
             >
-                <Flex flex="30"
+                {/* Sidebar */}
+                <Flex
+                    flex="30"
                     flexDirection={"column"}
-                    gap={2}
-                    maxW={{
-                        sm: "250px",
-                        md: "full",
-                    }}
-                    mx={"auto"}
-
+                    gap={4}
+                    maxW={{ sm: "250px", md: "full" }}
+                    mx={{ base: "auto", md: 0 }}
+                    bg={useColorModeValue("white", "gray.800")}
+                    borderRadius="xl"
+                    boxShadow="md"
+                    p={4}
+                    minH={{ base: "auto", md: "500px" }}
                 >
-                    <Text fontWeight={"700"} color={useColorModeValue("gray.600", "gray.400")} >
-                        Your conversations
+                    <Text fontWeight={"bold"} fontSize={{ base: "lg", md: "xl" }} color={useColorModeValue("gray.700", "gray.200")} mb={2} letterSpacing={1}>
+                        Your Conversations
                     </Text>
-                    <form onSubmit={handleConversationSearch}> 
-                        <Flex alignItems={"center"} gap={2}>
-                            <Input placeholder='Search for a user' onChange={(e)=> setSearchConversation(e.target.value)} />
-                            <Button size={"sm"} colorScheme='blue' ml={2} onClick={handleConversationSearch} isLoading={searchingUser} cursor={"pointer"}>
+                    <form onSubmit={handleConversationSearch} style={{ width: "100%" }}>
+                        <Flex alignItems={"center"} gap={2} mb={3}>
+                            <Input
+                                placeholder='Search for a user'
+                                onChange={(e) => setSearchConversation(e.target.value)}
+                                borderRadius="full"
+                                bg={useColorModeValue("gray.100", "gray.700")}
+                                _focus={{ borderColor: "blue.400", bg: useColorModeValue("white", "gray.600") }}
+                                boxShadow="sm"
+                            />
+                            <Button
+                                size="sm"
+                                colorScheme='blue'
+                                ml={2}
+                                onClick={handleConversationSearch}
+                                isLoading={searchingUser}
+                                cursor="pointer"
+                                borderRadius="full"
+                                boxShadow="sm"
+                            >
                                 <SearchIcon />
                             </Button>
                         </Flex>
                     </form>
-
-                    {loadingConversations && 
+                    {/* Loading skeletons */}
+                    {loadingConversations &&
                         [0, 1, 2, 3, 4].map((_, i) => (
-                            <Flex key={i}  alignItems={"center"} gap={2} mt={2} p={2} borderRadius={"md"} _hover={{ bg: useColorModeValue("gray.100", "gray.700") }}>
+                            <Flex
+                                key={i}
+                                alignItems={"center"}
+                                gap={2}
+                                mt={2}
+                                p={2}
+                                borderRadius={"lg"}
+                                _hover={{ bg: useColorModeValue("gray.100", "gray.700") }}
+                                bg={useColorModeValue("gray.50", "gray.700")}
+                                boxShadow="xs"
+                                transition="all 0.2s"
+                            >
                                 <Box>
                                     <SkeletonCircle size='10' />
                                 </Box>
-                                <Flex flexDirection={"column"} gap={3} w={"full"}>
+                                <Flex flexDirection={"column"} gap={2} w={"full"}>
                                     <Skeleton h={"10px"} w={"80px"} />
                                     <Skeleton h={"8px"} w={"90%"} />
                                 </Flex>
                             </Flex>
                         ))
                     }
-                            {console.log(conversations._id,conversations)}
-
+                    {/* Conversation list */}
                     {!loadingConversations &&
                         conversations.map((conversation) => (
-                            <Conversation key={conversation._id} 
-                            isOnline={onlineUsers.includes(conversation.participants[0]._id)}
-                            conversation={conversation} />
+                            <Conversation
+                                key={conversation._id}
+                                isOnline={onlineUsers.includes(conversation.participants[0]._id)}
+                                conversation={conversation}
+                                selectedBg={useColorModeValue("blue.100", "gray.100")}
+                                hoverBg={useColorModeValue("blue.50", "gray.600")}
+                            />
                         ))
                     }
                 </Flex>
+                {/* Main area */}
                 {!selectedConversation._id && (
                     <Flex
-                        flex={0}
-                        borderRadius={"md"}
-                        p={2}
+                        flex={1}
+                        borderRadius={"2xl"}
+                        p={6}
                         flexDir={"column"}
                         alignItems={"center"}
                         justifyContent={"center"}
-                        height={"400px"}
+                        minH={{ base: "250px", md: "500px" }}
+                        bg={useColorModeValue("white", "gray.800")}
+                        boxShadow="md"
+                        transition="all 0.3s"
                     >
-                        <GiConversation size={100} />
-                        <Text fontSize={20}> Select a conversations</Text>
+                        <GiConversation size={100} color={useColorModeValue("#3182ce", "#90cdf4")} />
+                        <Text fontSize={{ base: 18, md: 22 }} color={useColorModeValue("gray.600", "gray.300")} mt={4} fontWeight="semibold">
+                            Select a conversation
+                        </Text>
                     </Flex>
                 )}
-                {console.log("selectedConversation", selectedConversation._id)}
                 {selectedConversation._id && <MessageContainer />}
             </Flex>
         </Box>

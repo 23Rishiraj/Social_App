@@ -6,17 +6,14 @@ import { useToast } from '@chakra-ui/react';
 import { useRecoilValue } from 'recoil';
 import userAtom from '../atoms/userAtom';
 import { Link as RouterLink } from 'react-router-dom';//for no reload effect or client side routing
-import { useState } from 'react';
-import useShowToast from '../hooks/useShowToast';
+import usefollowunfollow from '../hooks/usefollowunfollow';
 
 const UserHeader = ({ user }) => {
     // if (!user) return null;
 console.log( user);
     const toast = useToast();
     const currentUser = useRecoilValue(userAtom);//logged in user
-    const [following, setFollowing] = useState(user.followers.includes(currentUser?._id));
-    const showToast = useShowToast();
-    const [updating, setUpdating] = useState(false);
+    const {handleFollowUnfollow,updating,following} =usefollowunfollow(user);
     // console.log(following, "ffffffffffffffffffffff");
 
     const copyURL = () => {
@@ -26,44 +23,7 @@ console.log( user);
         });
     };
 
-    const handleFollowUnfollow = async () => {
-        if (!currentUser) {
-            showToast("Error", "Please login to follow", "error");
-            return;
-        }
-        
-        setUpdating(true);
-        if (updating) return;
-        try {
-            const res = await fetch(`/api/users/follow/${user._id}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
-            const data = await res.json();
-            if (data.error) {
-                showToast("Error", data.error, "error")
-                return;
-            }
-
-            if (following) {
-                showToast("Success", `Unfollowed ${user.name}`, "success");
-                user.followers.pop();
-            }
-            else {
-                showToast("Success", `Followed ${user.name}`, "success");
-                user.followers.push(currentUser._id);
-            }
-
-            setFollowing(!following);
-            console.log(data);
-        } catch (error) {
-            showToast("Error", error, "error");
-        } finally {
-            setUpdating(false);
-        }
-    }
+    
     return (
         <VStack justifyContent={"start"} gap={4}>
             <Flex justifyContent={"space-between"} w="100%">

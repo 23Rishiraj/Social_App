@@ -4,7 +4,7 @@ import userAtom from '../atoms/userAtom'
 import { BsCheck2All, BsFillImageFill } from 'react-icons/bs';
 import { selectedConversationAtom } from '../atoms/messagesAtoms';
 
-const Conversation = ({conversation,isOnline}) => {
+const Conversation = ({conversation, isOnline, selectedBg, hoverBg}) => {
     const user = conversation.participants[0];
     const currentUser= useRecoilValue(userAtom)
     const lastMessage = conversation.lastMessage;
@@ -16,22 +16,24 @@ const Conversation = ({conversation,isOnline}) => {
         <Flex
             gap={4}
             alignItems={"center"}
-            p={1}
+            p={3}
             _hover={{
                 cursor: "pointer",
-                bg: useColorModeValue("gray.600", "gray.700"),
-                color: "white"
+                bg: hoverBg || useColorModeValue("blue.50", "gray.700"),
+                color: useColorModeValue("blue.700", "blue.200"),
+                boxShadow: useColorModeValue("0 2px 8px 0 rgba(0,0,0,0.06)", "0 2px 8px 0 rgba(0,0,0,0.25)")
             }}
-            onClick={()=> setSelectedConversation({
-                _id:conversation._id,
+            onClick={() => setSelectedConversation({
+                _id: conversation._id,
                 userId: user._id,
                 username: user.username,
-                userProfilePic: user.profilePic ,
+                userProfilePic: user.profilePic,
                 mock: conversation.mock,
             })}
-            bg={selectedConversation?._id === conversation._id ? (colorMode === "light" ? "gray.300" : "gray.dark")
-            : ""}
-            borderRadius={"md"}
+            bg={selectedConversation?._id === conversation._id ? (selectedBg || useColorModeValue("blue.100", "gray.700")) : useColorModeValue("white", "gray.800")}
+            borderRadius={"xl"}
+            boxShadow={selectedConversation?._id === conversation._id ? useColorModeValue("0 4px 16px 0 rgba(49,130,206,0.10)", "0 4px 16px 0 rgba(144,205,244,0.10)") : "sm"}
+            transition="all 0.85s"
         >
             <WrapItem>
                 <Avatar size={{
@@ -46,17 +48,16 @@ const Conversation = ({conversation,isOnline}) => {
             </WrapItem>
 
             <Stack direction={"column"} fontSize={"sm"}>
-                <Text fontWeight={"600"} display={"flex"} alignItems={"center"}>
-                    {user.username || "Unknown" } <Image src='/verified.png' w={4} h={4} ml={1} />
+                <Text fontWeight={"bold"} fontSize={{ base: "md", md: "lg" }} display={"flex"} alignItems={"center"} color={selectedConversation?._id === conversation._id ? useColorModeValue("blue.700", "blue.200") : useColorModeValue("gray.700", "gray.200") }>
+                    {user.username || "Unknown"} <Image src='/verified.png' w={4} h={4} ml={1} />
                 </Text>
-                <Text fontSize={"xs"} display={"flex"} alignItems={"center"} gap={1}>
-                    {/* {console.log(currentUser._id,user._id, lastMessage.sender)} */}
+                <Text fontSize={"xs"} display={"flex"} alignItems={"center"} gap={1} color={useColorModeValue("gray.600", "gray.300") }>
                     {currentUser._id === lastMessage.sender ? (
-                        <Box color={lastMessage.seen ? "blue.300" : ""} fontWeight={"bold"}>
+                        <Box color={lastMessage.seen ? "blue.400" : useColorModeValue("gray.500", "gray.400")} fontWeight={"bold"}>
                             <BsCheck2All size={16} />
                         </Box>
                     ) : ""}
-                    {lastMessage.text.length>14  ? lastMessage.text.substring(0, 14) + "..." : lastMessage.text || <BsFillImageFill size={15} /> }
+                    {lastMessage.text.length > 14 ? lastMessage.text.substring(0, 14) + "..." : lastMessage.text || <BsFillImageFill size={15} />}
                 </Text>
             </Stack>
         </Flex>
