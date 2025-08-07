@@ -13,7 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { BsThreeDots } from "react-icons/bs";
 import Actions from "../components/Action";
-import Comment from "../components/comment";
+import Comment from "../components/Comment";
 import { useEffect } from "react";
 import useGetUserProfiler from "../hooks/useGetUserProfile";
 import useShowToast from "../hooks/useShowToast";
