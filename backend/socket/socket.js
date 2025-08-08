@@ -10,7 +10,7 @@ const io = new Server(server, {
     cors: {
         origin:["http://localhost:3000", "https://chatalyst.onrender.com","http://localhost:5000"], // Update with your frontend URL
         methods: ["GET", "POST"],
-        // credentials: true,
+        credentials: true,
     },
 });
 
