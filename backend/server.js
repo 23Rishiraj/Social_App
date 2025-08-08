@@ -1,60 +1,45 @@
 import express from 'express';
-import path from 'path';
+import path from'path'
 import dotenv from 'dotenv';
-import cookieParser from 'cookie-parser';
-import cors from 'cors';
-import { fileURLToPath } from 'url';
 import connectDB from './db/connectDB.js';
+import cookieParser from 'cookie-parser';
 import userRoutes from './routes/userRoutes.js';
 import postRoutes from './routes/postRoutes.js';
 import messageRoutes from './routes/messageRoutes.js';
-import { v2 as cloudinary } from "cloudinary";
-import { app, server } from './socket/socket.js';
+import {v2 as cloudinary} from "cloudinary";
+import { app,server } from './socket/socket.js'; 
 
-// Setup __dirname in ES modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Load env variables
 dotenv.config();
 
-// Connect to DB
 connectDB();
+// const app = express();
 
-// Middleware
-app.use(cors({
-  origin: [
-    "https://chatalyst.onrender.com",
-    "http://localhost:5173"
-  ],
-  credentials: true
-}));
-app.use(express.json({ limit: "50mb" }));
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
+const PORT = process.env.PORT || 5000;
+const __dirname =path.resolve();
+
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME ,
+    api_key: process.env.CLOUDINARY_API_KEY ,
+    api_secret: process.env.CLOUDINARY_API_SECRET ,
+})
+
+
+app.use(express.json({limit:"50mb"}));//middleware parse json data in req.boby
+app.use(express.urlencoded({ extended: true }));//To parse from data in req.body
+app.use(cookieParser());//middleware parse cookie data in req.cookies
 
 // Routes
-app.use("/api/users", userRoutes);
-app.use("/api/posts", postRoutes);
-app.use("/api/messages", messageRoutes);
+app.use("/api/users",userRoutes);
+app.use("/api/posts",postRoutes);
+app.use("/api/messages",messageRoutes);
 
-// Cloudinary config
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET
-});
+if(process.env.NODE_ENV === "production"){
+    app.use(express.static(path.join(__dirname,"/frontend/dist")))
 
-// Serve frontend build in production
-if (process.env.NODE_ENV === "production") {
-  const distPath = path.join(__dirname, '..', 'frontend', 'dist');
-  app.use(express.static(distPath));
-
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(distPath, 'index.html'));
-  });
+    app.get("*",(req,res) =>{
+        res.sendFile(path.resolve(__dirname,"frontend","dist","index.html"))
+    }) 
 }
 
-// Start server
-const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+server.listen(PORT, () => console.log(`server started at https://localhost:${PORT}`) );
