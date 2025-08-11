@@ -38,7 +38,7 @@ export default function LoginCard() {
     setLoading(true);
     if (loading) return; // Prevent multiple submissions
     try {
-      const res = await fetch("https://social-app-backend-mvwm.onrender.com/api/users/login", {
+      const res = await fetch("/api/users/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

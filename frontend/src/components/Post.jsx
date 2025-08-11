@@ -22,7 +22,7 @@ const Post = ({ post, postedBy }) => {
     useEffect(() => {
         const getUser = async () => {
             try {
-                const res = await fetch("https://social-app-backend-mvwm.onrender.com/api/users/profile/" + postedBy);
+                const res = await fetch("/api/users/profile/" + postedBy);
                 const data = await res.json();
                 console.log(data);
                 if (data.error) {
