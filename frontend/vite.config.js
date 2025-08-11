@@ -9,7 +9,7 @@ export default defineConfig({
     //get rid of the course error
     proxy:{
       "/api":{
-        target:"https://chatalyst-backend.onrender.com",
+        target:"http://localhost:5000",
         changeOrigin:true,
         secure:false,
       }
