@@ -14,8 +14,5 @@ export default defineConfig({
         secure:false,
       }
     }
-    build: {
-    sourcemap: true // ✅ enable source maps for easier debugging in production
-  }
   }
 })
